@@ -5,6 +5,9 @@
 #pragma warning(pop)
 #include <MinHook.h>
 #include <gd.h>
+#include <chrono>
+#include <thread>
+#include <random>
 
 bool (__thiscall* GJGarageLayer_init)(cocos2d::CCLayer* self);
 
@@ -42,6 +45,13 @@ bool __fastcall GJGarageLayer_init_H(cocos2d::CCLayer* self, void*) {
 DWORD WINAPI thread_func(void* hModule) {
     MH_Initialize();
 
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> distr(100, 2000);
+
+    int random = distr(gen);
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(random));
 
     auto base = reinterpret_cast<uintptr_t>(GetModuleHandle(0));
     MH_CreateHook(
